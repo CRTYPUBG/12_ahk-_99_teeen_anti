@@ -1,0 +1,58 @@
+#NoEnv
+#Persistent
+#SingleInstance Force
+SetWorkingDir %A_ScriptDir%
+SetTitleMatchMode, 2
+#IfWinActive, ahk_exe AndroidEmulatorEn.exe ; GameLoop için
+
+; 🔫 Makro Aktif/Deaktif - F1
+F1::
+Toggle := !Toggle
+SoundBeep, % (Toggle ? 750 : 500), 100 ; Açık: 750 Hz, Kapalı: 500 Hz
+ToolTip, % "Makro: " (Toggle ? "AÇIK" : "KAPALI"), 0, 0
+SetTimer, RemoveToolTip, -1000
+return
+
+RemoveToolTip:
+ToolTip
+return
+
+; 🎯 Q Tuşu: Eğil + Zıpla + Ateş
+$q::
+If (Toggle) {
+    Random, delay1, 40, 60 ; Rastgele gecikme (anti-ban)
+    Random, delay2, 45, 65
+    Random, fireDelay, 280, 320
+    Send {c down}    ; Eğil
+    Sleep %delay1%
+    Send {Space down} ; Zıpla
+    Sleep %delay2%
+    Send {LButton down} ; Ateş Et
+    Sleep %fireDelay%
+    Send {LButton up}
+    Send {c up}
+    Send {Space up}
+}
+return
+
+; 🎮 Geri Tepme Azaltma
+$LButton::
+If (Toggle) {
+    Loop {
+        If !GetKeyState("LButton", "P")
+            break
+        Random, moveY, 2, 4 ; Rastgele aşağı çekme
+        Random, sleepTime, 10, 20 ; Rastgele gecikme
+        MoveMouse(0, moveY)
+        Sleep %sleepTime%
+    }
+}
+return
+
+; 🖱 Mouse Hareket Fonksiyonu
+MoveMouse(x, y) {
+    DllCall("mouse_event", uint, 0x0001, int, x, int, y, uint, 0, int, 0)
+}
+
+; 🚪 Çıkış - F12
+F12::ExitApp
