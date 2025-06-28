@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fury Z1 Panel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgba(0, 0, 0, 0.7); /* Saydam arka plan */
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: -1;
+        }
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.1); /* Saydam panel */
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px); /* Bulanıklık efekti */
+            color: #fff;
+            text-align: center;
+            z-index: 1;
+        }
+        .ascii-art {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+            margin: 0;
+            font-size: 10px;
+        }
+        .license-section, .controls {
+            margin: 10px 0;
+        }
+        input, button {
+            padding: 5px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container" id="panel">
+        <h1>Fury Z1 Panel</h1>
+        <pre class="ascii-art">
+ ██████╗██████╗ ████████╗██╗   ██╗    ███╗   ███╗ █████╗ ██╗  ██╗██████╗  ██████╗     ██╗
+██╔════╝██╔══██╗╚══██╔══╝╚██╗ ██╔╝    ████╗ ████║██╔══██╗██║ ██╔╝██╔══██╗██╔═══██╗    ██║
+██║     ██████╔╝   ██║    ╚████╔╝     ██╔████╔██║███████║█████╔╝ ██████╔╝██║   ██║    ██║
+██║     ██╔══██╗   ██║     ╚██╔╝      ██║╚██╔╝██║██╔══██║██╔═██╗ ██╔══██╗██║   ██║    ╚═╝
+╚██████╗██║  ██║   ██║      ██║       ██║ ╚═╝ ██║██║  ██║██║  ██╗██║  ██║╚██████╔╝    ██╗
+ ╚═════╝╚═╝  ╚═╝   ╚═╝      ╚═╝       ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝     ╚═╝
+        </pre>
+        <div class="license-section">
+            <label for="license">Lisans Anahtarı:</label>
+            <input type="text" id="license" placeholder="Crty-key-ultra-45678">
+            <button onclick="checkLicense()">Lisansı Doğrula</button>
+            <p id="license-status"></p>
+        </div>
+        <div class="controls">
+            <button onclick="toggleMacro()">Makro Aç/Kapat (F1)</button>
+            <p id="macro-status">Makro: KAPALI</p>
+        </div>
+        <div id="github-content"></div>
+    </div>
+
+    <!-- Particle.js Kütüphanesi -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.js"></script>
+    <script>
+        // Particle.js konfigurasyonu
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#ffffff' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 2, direction: 'none', random: true, straight: false }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' } },
+                modes: { repulse: { distance: 100, duration: 0.4 } }
+            }
+        });
+
+        // GitHub'dan index.html çekme
+        fetch('https://raw.githubusercontent.com/kullanici/repo/main/index.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('github-content').innerHTML = html;
+            })
+            .catch(error => console.error('index.html çekme hatası:', error));
+
+        // Lisans doğrulama
+        function checkLicense() {
+            const license = document.getElementById('license').value;
+            const status = document.getElementById('license-status');
+            if (license === 'Crty-key-ultra-45678') {
+                status.textContent = 'Lisans doğrulandı!';
+                status.style.color = 'green';
+            } else {
+                status.textContent = 'Geçersiz lisans anahtarı!';
+                status.style.color = 'red';
+            }
+        }
+
+        // Makro aç/kapat simülasyonu (Python backend ile entegre edilecek)
+        let macroEnabled = false;
+        function toggleMacro() {
+            macroEnabled = !macroEnabled;
+            document.getElementById('macro-status').textContent = `Makro: ${macroEnabled ? 'AÇIK' : 'KAPALI'}`;
+            if (macroEnabled) {
+                // Python backend'e makro başlatma sinyali gönder (örneğin, WebSocket)
+                console.log('Makro başlatıldı (Python ile entegre edilecek)');
+            } else {
+                console.log('Makro durduruldu');
+            }
+        }
+
+        // F1 tuşu ile makro kontrolü
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'F1') {
+                toggleMacro();
+            }
+        });
+    </script>
+</body>
+</html>
